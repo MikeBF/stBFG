@@ -1,0 +1,32 @@
+{
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test"
+  },
+  "devDependencies": {
+    "@cronos-labs/hardhat-cronoscan": "^0.0.4",
+    "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.10",
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-etherscan": "^3.0.3",
+    "chai": "^4.3.4",
+    "ethers": "^5.4.7",
+    "hardhat": "^2.22.0",
+    "hardhat-abi-exporter": "^2.10.1",
+    "hardhat-contract-sizer": "^2.1.1",
+    "hardhat-docgen": "^0.0.0",
+    "hardhat-gas-reporter": "^1.0.9",
+    "mocha": "^10.2.0",
+    "web3": "^4.6.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2",
+    "@openzeppelin/contracts-upgradeable": "^5.0.2",
+    "@openzeppelin/hardhat-upgrades": "^1.22.1",
+    "@poanet/solidity-flattener": "^3.0.8",
+    "bignumber.js": "^9.0.2",
+    "dotenv": "^16.0.3",
+    "jsbi": "^4.3.0",
+    "lodash": "^4.17.21"
+  }
+}
