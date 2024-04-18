@@ -4,6 +4,7 @@ require('@openzeppelin/hardhat-upgrades')
 require('@nomiclabs/hardhat-ethers')
 require('@nomiclabs/hardhat-etherscan')
 require('hardhat-gas-reporter')
+require('solidity-docgen')
 
 
 module.exports = {
@@ -27,11 +28,11 @@ module.exports = {
 			gasPrice: 20e9,
 		},
 		mainnetBSC: {
-			url: "https://restless-bitter-cherry.bsc.quiknode.pro/7cd27b905f7b140932a1f71bd22f24e575e0a3ca/", //"https://bsc-mainnet.nodereal.io/v1/ef269c169b624e28acb38925c0db4e9b",//"https://bsc-dataseed.binance.org/",
+			url: "https://bsc-mainnet.nodereal.io/v1/ef269c169b624e28acb38925c0db4e9b", //"https://restless-bitter-cherry.bsc.quiknode.pro/7cd27b905f7b140932a1f71bd22f24e575e0a3ca/", //"https://bsc-mainnet.nodereal.io/v1/ef269c169b624e28acb38925c0db4e9b",//"https://bsc-dataseed.binance.org/",
 			chainId: 56,
 			gasLimit: 50e18,
 			gasPrice: 3e9,
-			accounts: [process.env.privatKeyBF]
+			accounts: [process.env.privateKeyDeployer]
 		},
 		testnetMatic: {
 			url: "https://rpc-mumbai.maticvigil.com/",
@@ -76,5 +77,8 @@ module.exports = {
         gasPriceApi: 'https://api.bscscan.com/api?module=proxy&action=eth_gasPrice',
 		gasPrice: 3,
         coinmarketcap: process.env.coinmarketcupApiKey
+	},
+	docgen: {
+
 	}
 }
