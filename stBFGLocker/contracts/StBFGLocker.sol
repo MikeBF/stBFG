@@ -33,14 +33,12 @@ contract StBFGLocker {
     /// @notice distribution for burn while early withdrawal
     uint constant burnDist = 25;
     /// @notice lock duration
-    uint32 public constant lockDuration = 30; //todo check in prod
+    uint32 public constant lockDuration = 365;
 
     /// @notice treasury address
     address internal treasury;
     /// @notice team wallet address
     address internal teamWallet;
-    /// @notice burn address
-    address internal burnAddress;
     /// @notice total tokens locked in contract
     uint public totalLockTokens;
     /// @notice amount of unlock tokens on contract balance
@@ -66,21 +64,17 @@ contract StBFGLocker {
     /// @notice contract constructor
     /// @param _treasury set treasury address
     /// @param _teamWallet set team wallet address
-    /// @param _burnAddress set burn address
     constructor(
         address _treasury,
-        address _teamWallet,
-        address _burnAddress
+        address _teamWallet
     ){
         require(
             _treasury != address(0) &&
-            _teamWallet != address(0) &&
-            _burnAddress != address(0)
+            _teamWallet != address(0)
             , "Cant be zero address"
         );
         treasury = _treasury;
         teamWallet = _teamWallet;
-        burnAddress = _burnAddress;
         lastUpdateDay = getCurrentDay();
         emit NewTreasury(_treasury);
     }
@@ -105,7 +99,7 @@ contract StBFGLocker {
         uint32 curDay = getCurrentDay();
         uint unlockAmount;
         for(uint32 i = 1; i <= curDay - _lastUpdateDay; i++){
-            unlockAmount += unlockPerDay[lastUpdateDay + i];
+            unlockAmount += unlockPerDay[_lastUpdateDay + i];
         }
         lastUpdateDay = curDay;
         unlockAmount = unlockAmount > totalLockTokens ? totalLockTokens : unlockAmount;
@@ -115,8 +109,7 @@ contract StBFGLocker {
 
     /// @notice deposit bfg to pool
     /// @param data user deposit data with transaction id and amount
-    /// @dev only treasury can call
-    function deposit(UserDataDeposit[] calldata data) external onlyTreasury {
+    function deposit(UserDataDeposit[] calldata data) external {
         updateDay();
         uint128 amount;
         for(uint i; i < data.length; i++){
@@ -124,7 +117,7 @@ contract StBFGLocker {
         }
         unlockPerDay[getCurrentDay() + lockDuration] += amount;
         totalLockTokens += amount;
-        bfg.transferFrom(treasury, address(this), amount);
+        bfg.transferFrom(msg.sender, address(this), amount);
         emit Deposit(data);
     }
 
@@ -177,7 +170,7 @@ contract StBFGLocker {
             amount += _amount;
         }
         teamDistribution > 0 && bfg.transfer(teamWallet, teamDistribution);
-        burnDistribution > 0 && bfg.transfer(burnAddress, burnDistribution);
+        burnDistribution > 0 && bfg.burn(burnDistribution);
         bfg.transfer(treasury, amount);
         totalUnlockTokens -= amount + teamDistribution + burnDistribution;
         emit Withdraw(data);
@@ -198,8 +191,8 @@ contract StBFGLocker {
             amount = _amount - (teamDistribution + burnDistribution);
             totalLockTokens -= _amount;
             totalUnlockTokens += _amount;
-            unlockPerDay[lockEndDay] -= _amount;
             require(unlockPerDay[lockEndDay] >= _amount, "wrong lock end day or amount");
+            unlockPerDay[lockEndDay] -= _amount;
         } else {
             amount = _amount;
         }
