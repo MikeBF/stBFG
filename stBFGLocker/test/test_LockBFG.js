@@ -86,7 +86,7 @@ describe(`Check Lock BFG contract`, async function () {
 
         const vestingAmount = await lockBFGContract.vestingAmount();
 
-        for(let i = 1; i <= 10; i++){
+        for(let i = 1; i <= 20; i++){
             await expect(lockBFGContract.withdraw())
                 .to.emit(lockBFGContract, "WithdrawTokens")
                 .changeTokenBalances(bfgToken, [lockBFGContract, treasury], [toBN(0).sub(vestingAmount), vestingAmount])
@@ -113,5 +113,3 @@ describe(`Check Lock BFG contract`, async function () {
     })
 
 })
-
-
