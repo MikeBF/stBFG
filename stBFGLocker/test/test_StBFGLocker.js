@@ -9,7 +9,7 @@ const ERC20ABI = [
     'event Transfer(address indexed from, address indexed to, uint256 value)'
 ]
 
-let treasury, teamWallet, burnAddress, stBFGContract, bfgToken, startDay, lockDuration, lockDay1, lockDay2;
+let treasury, teamWallet, stBFGContract, bfgToken, startDay, lockDuration, lockDay1, lockDay2;
 
 
 getERC20From_forking = async (from, ERC20_address, howMuch = module.exports.toBN(1), to) => {
@@ -28,14 +28,12 @@ passTime = async ms => {
 }
 before(async function () {
     const accounts = await ethers.getSigners();
-    treasury = accounts[0];
+    treasury = accounts[0]
     teamWallet = accounts[1]
-    burnAddress = accounts[2]
     //    /// @notice contract constructor
     //     /// @param _treasury set treasury address
     //     /// @param _teamWallet set team wallet address
-    //     /// @param _burnAddress set burn address
-    const deployArgs = [treasury.address, teamWallet.address, burnAddress.address]
+    const deployArgs = [treasury.address, teamWallet.address]
 
     const StBFGContract = await ethers.getContractFactory('StBFGLocker')
     stBFGContract = await StBFGContract.deploy(...deployArgs)
@@ -143,15 +141,21 @@ describe(`Check stBFG Contract`, async function () {
             },
             {
                 transactionId: "0x619ceb8f1b9608097a3c29f4",
+                amount: toBN(11),
+                lockEndDay: lockDay1,
+                earlyWithdraw: true
+            },
+            {
+                transactionId: "0x619ceb8f1b9608097a3c29f4",
                 amount: toBN(5),
                 lockEndDay: lockDay2,
                 earlyWithdraw: true
             }]
 
         await expect(stBFGContract.withdraw(withdrawParam))
-            .changeTokenBalances(bfgToken, [treasury, teamWallet, burnAddress], [toBN(5), toBN(25,17), toBN(25,17)])
+            .changeTokenBalances(bfgToken, [treasury, teamWallet], [toBN(105, 17), toBN(525,16)])
             .to.emit(stBFGContract, 'Withdraw')
-        expect(await stBFGContract.totalLockTokens()).eq(toBN(165-10))
+        expect(await stBFGContract.totalLockTokens()).eq(toBN(165-21))
         expect(await stBFGContract.totalUnlockTokens()).eq(0)
     })
 
@@ -164,7 +168,7 @@ describe(`Check stBFG Contract`, async function () {
             earlyWithdraw: false
         }]
         await expect(stBFGContract.withdraw(withdrawParam))
-            .changeTokenBalances(bfgToken, [treasury, teamWallet, burnAddress], [toBN(50), 0, 0])
+            .changeTokenBalances(bfgToken, [treasury, teamWallet], [toBN(50), 0])
             .to.emit(stBFGContract, 'Withdraw')
     })
 
@@ -177,18 +181,16 @@ describe(`Check stBFG Contract`, async function () {
             earlyWithdraw: false
         }]
         await expect(stBFGContract.withdraw(withdrawParam))
-            .changeTokenBalances(bfgToken, [treasury, teamWallet, burnAddress], [toBN(90), 0, 0])
+            .changeTokenBalances(bfgToken, [treasury, teamWallet], [toBN(90), 0])
             .to.emit(stBFGContract, 'Withdraw')
         withdrawParam = [{
             transactionId: "0x619ceb8f1b9608097a3c223e",
-            amount: toBN(10),
+            amount: toBN(4),
             lockEndDay: lockDay2,
             earlyWithdraw: false
         }]
         await expect(stBFGContract.withdraw(withdrawParam))
-            .changeTokenBalances(bfgToken, [treasury, teamWallet, burnAddress], [toBN(10), 0, 0])
+            .changeTokenBalances(bfgToken, [treasury, teamWallet], [toBN(4), 0])
             .to.emit(stBFGContract, 'Withdraw')
     })
 })
-
-
