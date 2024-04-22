@@ -19,7 +19,7 @@ module.exports = {
 		hardhat: {
 			blockGasLimit: 99999999,
 			forking: {
-				url: process.env.rcp
+				url: process.env.rpc
 			}
 		},
 		testnetBSC: {
@@ -28,7 +28,7 @@ module.exports = {
 			gasPrice: 20e9,
 		},
 		mainnetBSC: {
-			url: "https://bsc-mainnet.nodereal.io/v1/ef269c169b624e28acb38925c0db4e9b", //"https://restless-bitter-cherry.bsc.quiknode.pro/7cd27b905f7b140932a1f71bd22f24e575e0a3ca/", //"https://bsc-mainnet.nodereal.io/v1/ef269c169b624e28acb38925c0db4e9b",//"https://bsc-dataseed.binance.org/",
+			url: "https://bsc-dataseed.binance.org/",
 			chainId: 56,
 			gasLimit: 50e18,
 			gasPrice: 3e9,
